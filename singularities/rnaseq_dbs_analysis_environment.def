@@ -1,0 +1,15 @@
+bootstrap: docker
+from: viya/biodocker
+
+%post
+  cd /opt && git clone https://github.com/pezmaster31/bamtools.git &&\
+  cd bamtools && git checkout d24d850de17134fe4e7984b26493c5c0a1844b35 &&\
+  mkdir build && cd build &&\
+  cmake -DCMAKE_INSTALL_PREFIX=/usr/ .. && make && make install &&\
+  rm -rf /opt/* && cd $HOME &&\
+  R --slave -e 'install.packages(c("plyr", "knitr", "kableExtra", "gridExtra", "lmtest", "ggbeeswarm", "wesanderson"), dependencies=TRUE, repos="http://cran.rstudio.com/")' 
+  R --slave  -e 'BiocManager::install(c("ensembldb", "DESeq2",  "biomaRt", "tximportData", "GenomicFeatures", "EnsDb.Hsapiens.v75", "tximport", "FDb.UCSC.tRNAs", "preprocessCore", "qvalue", "edgeR"), update=TRUE)' 
+  R  --slave -e 'remotes::install_github("vqv/ggbiplot")' 
+%environment
+  export LCALL=en_US.UTF-8
+  export LANG=en_US.UTF-8

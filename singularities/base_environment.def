@@ -1,0 +1,65 @@
+bootstrap: library
+from: ubuntu:20.04
+%post
+  apt-get update && apt-get install -y \
+  software-properties-common
+
+  add-apt-repository -y universe &&\
+  add-apt-repository -y ppa:deadsnakes/ppa &&\
+  apt update
+
+  apt-get update && apt-get install -y \
+  build-essential \
+  cmake \
+  curl \
+  git \
+  gnupg \
+  libcurl4-openssl-dev \
+  libdevil-dev \
+  libffi-dev \
+  libfontconfig1-dev \
+  libfribidi-dev \
+  libgdbm-dev \
+  libharfbuzz-dev \
+  libjsoncpp-dev \
+  liblzo2-dev \
+  libncurses5-dev \
+  libnss3-dev \
+  libreadline-dev \
+  libssl-dev \
+  libxml2-dev \
+  locales \
+  python3-dev \
+  python3-pip \
+  software-properties-common \
+  wget \
+  zlib1g-dev 
+
+  
+  gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 &&\
+  gpg -a --export E298A3A825C0D65DFD57CBB651716619E084DAB9 | apt-key add - &&\
+  add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&\
+  apt update &&\
+  apt install -y r-base r-base-core r-recommended r-base-dev
+  cd /opt/ && git clone https://github.com/gpertea/gffread &&\
+  cd gffread && git checkout fa5c76d0424f9567320b95795bd31824c11e70dd &&\
+  make release && mv gffread /usr/bin && cd /opt/ &&\
+  git clone  git://github.com/pezmaster31/bamtools.git &&\
+  cd bamtools && git checkout d24d850de17134fe4e7984b26493c5c0a1844b35 &&\
+  mkdir build && cd build &&\
+  cmake -DCMAKE_INSTALL_PREFIX=/usr/ .. && make && make install
+  cd / && rm -rf /opt/*
+
+  update-alternatives --install /usr/bin/python python /usr/bin/python3 20
+  python -m pip install -U numpy
+  python -m pip install -U scipy
+  python -m pip install -U pandas
+  python -m pip install -U matplotlib
+  python -m pip install -U bx-python
+
+  echo "install.packages(c('tidyverse', 'BiocManager', 'data.table', 'devtools', 'remotes'), dependencies=TRUE, repos='http://cran.rstudio.com/')" | R --slave
+  echo "BiocManager::install('Biostrings', update=TRUE)"  | R --slave
+
+  apt-get install -y locales-all 
+%environment
+  export LC_ALL=C

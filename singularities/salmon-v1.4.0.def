@@ -1,0 +1,24 @@
+Bootstrap: library
+From: ubuntu:18.04
+%post
+ PREPACKAGE_PACKAGES="wget software-properties-common"
+ POSTPACKAGE_PACKAGES="git gcc make g++ libboost-all-dev liblzma-dev libbz2-dev ca-certificates zlib1g-dev libcurl4-openssl-dev curl unzip autoconf apt-transport-https"
+ apt-get update && apt-get install -y --no-install-recommends $PREPACKAGE_PACKAGES
+ wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null |\
+ gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+ add-apt-repository universe &&\
+ add-apt-repository 'deb https://apt.kitware.com/ubuntu/ bionic main' &&\
+ apt-get update &&\
+ apt-get remove -y libcurl4 &&\
+ apt-get install -y --no-install-recommends $POSTPACKAGE_PACKAGES &&\
+ apt-get install -y cmake &&\
+ apt-get clean &&\
+ cd /opt &&\
+ git clone https://github.com/COMBINE-lab/salmon.git &&\
+ cd salmon &&\
+ git checkout 0813a0a287c2bd80071511830befe5d786a59ad1 &&\
+ mkdir build && cd build &&\
+ cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make && make install
+ rm -rf /opt/salmon
+ update-alternatives --install /usr/bin/python python /usr/bin/python3.6 20
+ apt-get install locales-all

@@ -1,0 +1,15 @@
+Bootstrap: library
+from: vi.ya/rnaseq-dbs/star_2.7.7a
+%post
+  apt-get update && apt-get install -y software-properties-common curl &&\
+  gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 &&\
+  gpg -a --export E298A3A825C0D65DFD57CBB651716619E084DAB9 | apt-key add - &&\
+  add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&\
+  apt update &&\
+  apt install -y r-base r-base-core r-recommended r-base-dev &&\
+  echo "install.packages('BiocManager', dependencies=TRUE, repos='http://cran.rstudio.com/')" | R --slave &&\
+  echo "BiocManager::install('EBSeq', update=TRUE)"  | R --slave
+  cd /opt && git clone https://github.com/deweylab/RSEM.git &&\
+  cd RSEM && git checkout e4dda70e90fb5eb9b831306f1c381f8bbf71ef0e &&\
+  make ebseq && make && make install &&\
+  cd / && rm -rf /opt/RSEM

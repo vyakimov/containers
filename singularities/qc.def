@@ -1,0 +1,26 @@
+Bootstrap: library
+From: ubuntu:20.04
+%post
+  apt-get update && apt-get install -y \
+  build-essential \
+  default-jre \
+  cmake \
+  git \
+  locales \
+  zlib1g-dev \
+  python3=3.8.2-0ubuntu2 \
+  python3-setuptools \
+  unzip \
+  wget &&\
+  update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+  cd /opt && git clone https://github.com/ewels/MultiQC.git &&\
+  cd MultiQC && git checkout 83af6d096765fbd277afce520edd6d41b20ff49a &&\
+  python setup.py install &&\
+  cd .. && wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9.zip &&\
+  unzip fastqc_v0.11.9.zip && rm fastqc_v0.11.9.zip &&\
+  chmod 755 FastQC/fastqc &&\
+  ln -s /opt/FastQC/fastqc /usr/local/bin/ &&\
+  apt-get install -y locales-all
+%environment
+  export LC_ALL=C
+
