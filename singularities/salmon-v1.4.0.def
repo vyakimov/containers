@@ -18,7 +18,7 @@ From: ubuntu:18.04
  cd salmon &&\
  git checkout 0813a0a287c2bd80071511830befe5d786a59ad1 &&\
  mkdir build && cd build &&\
- cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make && make install
- rm -rf /opt/salmon
+ cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make && make install &&\
+ cd $HOME && rm -rf /opt/salmon &&\
  update-alternatives --install /usr/bin/python python /usr/bin/python3.6 20
  apt-get install locales-all

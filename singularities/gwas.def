@@ -5,25 +5,21 @@ From: viya/biodocker
   cd /opt && git clone https://github.com/pezmaster31/bamtools.git &&\
   cd bamtools && git checkout d24d850de17134fe4e7984b26493c5c0a1844b35 &&\
   mkdir build && cd build &&\
-  cmake -DCMAKE_INSTALL_PREFIX=/usr/ .. && make && make install
-
+  cmake -DCMAKE_INSTALL_PREFIX=/usr/ .. && make && make install &&\
   cd /opt && git clone https://github.com/DReichLab/EIG.git &&\
   cd EIG && git checkout 09ed563fdec05648a66c206ba1fc37a198395cd7 &&\
-  cd src && make LDLIBS="-llapacke" && make install && mv ../bin/* /usr/bin/
-
+  cd src && make LDLIBS="-llapacke" && make install && mv ../bin/* /usr/bin/ &&\
   cd /opt && wget https://s3.amazonaws.com/plink2-assets/alpha2/plink2_linux_avx2.zip &&\
   unzip plink2_linux_avx2.zip &&\
-  mv plink2 /usr/bin
-
+  mv plink2 /usr/bin &&\
   git clone https://github.com/statgen/METAL.git &&\
   cd METAL && mkdir build && cd build &&\
   cmake -DCMAKE_BUILD_TYPE=Release .. &&\
   make && make test && make install &&\
-  mv bin/metal /usr/bin
-
-  cd / && rm -rf /opt/*
-  echo 'devtools::install_github("gaospecial/ggVennDiagram")' | R --slave
-  echo 'install.packages("qqman")' | R --slave
+  mv bin/metal /usr/bin &&\
+  cd / && rm -rf /opt/* &&\
+  R --slave -e 'devtools::install_github("gaospecial/ggVennDiagram")' &&\
+  R --slave -e 'install.packages("qqman")' 
   
 
 %environment

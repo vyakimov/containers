@@ -10,7 +10,7 @@ From: ubuntu:20.04
   python3=3.8.2-0ubuntu2 &&\
   cd /opt && git clone https://github.com/alexdobin/STAR.git &&\
   cd STAR && git checkout 054b0b807c607c98efd53f817194af090c18a490 &&\
-  cd source && make STAR &&\
+  cd source && make STAR && cd $HOME &&\
   mv /opt/STAR/source/STAR /usr/local/bin/STAR &&\
   rm -rf /opt/STAR &&\
   update-alternatives --install /usr/bin/python python /usr/bin/python3 10
