@@ -7,7 +7,7 @@ from: viya/biodocker
   mkdir build && cd build &&\
   cmake -DCMAKE_INSTALL_PREFIX=/usr/ .. && make && make install &&\
   rm -rf /opt/* && cd $HOME &&\
-  R --slave -e 'install.packages(c("plyr", "knitr", "kableExtra", "gridExtra", "lmtest", "ggbeeswarm", "wesanderson"), dependencies=TRUE, repos="http://cran.rstudio.com/")' 
+  R --slave -e 'install.packages(c("plyr", "knitr", "kableExtra", "gridExtra", "lmtest", "ggbeeswarm", "wesanderson", "lme4", "permute"), dependencies=TRUE, repos="http://cran.rstudio.com/")' 
   R --slave  -e 'BiocManager::install(c("ensembldb", "DESeq2",  "biomaRt", "tximportData", "GenomicFeatures", "EnsDb.Hsapiens.v75", "tximport", "FDb.UCSC.tRNAs", "preprocessCore", "qvalue", "edgeR"), update=TRUE)' 
   R  --slave -e 'remotes::install_github("vqv/ggbiplot")' 
 %environment

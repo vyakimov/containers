@@ -1,5 +1,5 @@
 Bootstrap: library
-from: vi.ya/rnaseq-dbs/star_2.7.7a
+from: vi.ya/rnaseq-dbs/star-2-7-7a:latest
 %post
   apt-get update && apt-get install -y software-properties-common curl &&\
   gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 &&\
