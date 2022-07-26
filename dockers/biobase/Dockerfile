@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y \
   libjsoncpp-dev \
   liblapack3 \
   liblapack-dev \
+  liblapacke-dev \
   liblzo2-dev \
   libncurses5-dev \
   libnss3-dev \
@@ -69,6 +70,6 @@ RUN python -m pip install -U pandas
 RUN python -m pip install -U matplotlib
 RUN python -m pip install -U bx-python
 
-RUN R --slave -e 'install.packages(c("tidyverse", "BiocManager", "data.table", "devtools", "remotes"), dependencies=TRUE, repos="http://cran.rstudio.com/")' 
-RUN R --slave -e 'BiocManager::install("Biostrings", update=TRUE)' 
-RUN R --slave -e 'update.packages(ask=FALSE, repos="http://cran.rstudio.com/")'
+RUN R --slave --vanilla -e 'install.packages(c("tidyverse", "BiocManager", "data.table", "devtools", "remotes", "R.utils"), dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")' 
+RUN R --slave --vanilla -e 'BiocManager::install("Biostrings", update=TRUE)' 
+RUN R --slave --vanilla -e 'update.packages(ask=FALSE, repos="http://cran.rstudio.com/")'
