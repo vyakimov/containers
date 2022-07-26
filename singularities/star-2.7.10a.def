@@ -1,0 +1,19 @@
+Bootstrap: library
+From: ubuntu:20.04
+%post
+  apt-get update && apt-get install -y \
+  build-essential \
+  cmake \
+  git \
+  locales \
+  zlib1g-dev \
+  python3=3.8.2-0ubuntu2 &&\
+  cd /opt && git clone https://github.com/alexdobin/STAR.git &&\
+  cd STAR && git checkout 7f0f3f16ebf232963e99891b5d3fecba071bdd57 &&\
+  cd source && make STAR && cd $HOME &&\
+  mv /opt/STAR/source/STAR /usr/local/bin/STAR &&\
+  rm -rf /opt/STAR &&\
+  update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+  apt-get install -y locales-all
+%environment
+  export LC_ALL=C
