@@ -41,6 +41,7 @@ RUN apt-get update && apt-get install -y \
   python3-dev \
   python3-pip \
   software-properties-common \
+  swig \
   tmux \
   wget \
   zlib1g-dev \
