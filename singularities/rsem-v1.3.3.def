@@ -1,15 +1,18 @@
 Bootstrap: library
-from: vi.ya/rnaseq-dbs/star-2-7-10:latest
+from: vi.ya/rnaseq-dbs/star-v2-7-10
 %post
-  apt-get update && apt-get install -y software-properties-common curl libcurl4-openssl-dev &&\
+  apt-get update && apt-get install -y software-properties-common curl libcurl4-openssl-dev wget &&\
   gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 &&\
   gpg -a --export E298A3A825C0D65DFD57CBB651716619E084DAB9 | apt-key add - &&\
   add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&\
   apt update &&\
   apt install -y r-base r-base-core r-recommended r-base-dev &&\
   echo "install.packages('BiocManager', dependencies=TRUE, repos='http://cran.rstudio.com/')" | R --slave &&\
-  echo "BiocManager::install('EBSeq', update=TRUE)"  | R --slave
+  echo "BiocManager::install('EBSeq', update=TRUE)"  | R --slave &&\
   cd /opt && git clone https://github.com/deweylab/RSEM.git &&\
   cd RSEM && git checkout e4dda70e90fb5eb9b831306f1c381f8bbf71ef0e &&\
   make ebseq && make && make install &&\
-  cd / && rm -rf /opt/RSEM
+  wget https://github.com/samtools/samtools/releases/download/1.17/samtools-1.17.tar.bz2 &&\
+  tar xjf samtools-1.17.tar.bz2 && cd samtools-1.17 &&\
+  ./configure && make && make install &&\
+  cd / && rm -rf /opt/RSEM && rm -rf /opt/samtools-1.17
