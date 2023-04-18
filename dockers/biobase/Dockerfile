@@ -72,5 +72,5 @@ RUN python -m pip install -U matplotlib
 RUN python -m pip install -U bx-python
 
 RUN R --slave --vanilla -e 'install.packages(c("tidyverse", "BiocManager", "data.table", "devtools", "remotes", "R.utils"), dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")' 
-RUN R --slave --vanilla -e 'BiocManager::install("Biostrings", update=TRUE)' 
-RUN R --slave --vanilla -e 'update.packages(ask=FALSE, repos="http://cran.rstudio.com/")'
+RUN R --slave --vanilla -e 'BiocManager::install("Biostrings", update=TRUE, lib="/usr/lib/R/library")' 
+RUN R --slave --vanilla -e 'update.packages(ask=FALSE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")'
