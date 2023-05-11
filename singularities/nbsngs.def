@@ -1,0 +1,85 @@
+Bootstrap: library
+From: ubuntu:22.04
+%setup
+ mkdir ${SINGULARITY_ROOTFS}/Reference
+%post
+ apt-get update &&\
+ DEBIAN_FRONTEND=noninteractive apt-get install -y \
+ build-essential \
+ cmake \
+ git \
+ gnupg \
+ libbz2-dev \
+ libcurl4-openssl-dev \
+ libfontconfig1-dev \
+ liblzma-dev \
+ libncurses5-dev \
+ libncursesw5-dev \
+ libssl-dev \
+ locales \
+ openjdk-18-jre-headless \
+ python-is-python3 \
+ python3-dev \
+ python3-matplotlib \
+ python3-numpy \
+ python3-pandas \
+ python3-scipy \
+ python3-pip \
+ python-is-python3 \
+ s3cmd \
+ wget \
+ zip \
+ zlib1g-dev &&\
+ locale-gen en_US.UTF-8 && cd /opt/ &&\
+ cd /opt && wget ftp://ftp.gnu.org/gnu/gsl/gsl-2.7.tar.gz &&\
+ tar zxvf gsl-2.7.tar.gz && cd gsl-2.7 &&\
+ ./configure --prefix /usr/local && make && make install &&\
+ wget -qO- https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.1_x64-linux.tar.bz2 | tar jxf - &&\
+ mv bwa-mem2-2.2.1_x64-linux/bwa-mem2* /usr/local/bin &&\
+ wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc &&\
+ echo 'deb https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/' >> /etc/apt/sources.list &&\
+ apt update &&\
+ apt install -y r-base r-base-core r-recommended r-base-dev &&\
+ wget https://sourceforge.net/projects/snpeff/files/snpEff_v4_3t_core.zip &&\
+ unzip snpEff_v4_3t_core.zip &&\
+ cp -r snpEff/ /usr/local/bin && cp -r clinEff/ /usr/local/bin &&\
+ wget https://github.com/samtools/htslib/releases/download/1.17/htslib-1.17.tar.bz2 &&\
+ tar -xjvf htslib-1.17.tar.bz2 &&\
+ cd htslib-1.17 &&\
+ ./configure --prefix /usr/local &&\
+ make && make install &&\
+ cd /opt && rm -rf * &&\
+ wget https://github.com/samtools/samtools/releases/download/1.17/samtools-1.17.tar.bz2 &&\
+ tar -xjvf samtools-1.17.tar.bz2 &&\
+ cd samtools-1.17 &&\
+ ./configure --prefix=/usr/local &&\
+ make && make install &&\
+ cd /opt && rm -rf * &&\
+ wget https://github.com/samtools/bcftools/releases/download/1.17/bcftools-1.17.tar.bz2 &&\
+ tar -xjvf bcftools-1.17.tar.bz2 &&\
+ cd bcftools-1.17 &&\
+ ./configure --prefix /usr/local &&\
+ make && make install &&\
+ cd /opt && rm -rf * &&\
+ wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary &&\
+ mv bedtools.static.binary /usr/local/bin/bedtools &&\
+ cd /opt && rm -rf * &&\
+ wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20230116.zip &&\
+ unzip plink_linux_x86_64_20230116.zip &&\
+ mv plink /usr/local/bin/ && cd /opt &&\
+ git clone https://github.com/pezmaster31/bamtools.git &&\
+ cd bamtools && mkdir build && cd build &&\
+ cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ .. &&\
+ make && make install &&\
+ cd /opt && rm -rf * &&\
+ wget https://github.com/CSB5/lofreq/raw/master/dist/lofreq_star-2.1.5_linux-x86-64.tgz &&\
+ tar zxvf lofreq_star-2.1.5_linux-x86-64.tgz &&\
+ cp lofreq_star-2.1.5_linux-x86-64/bin/* /usr/local/bin &&\
+ cd /opt && rm -rf * &&\
+ chmod +x /usr/local/bin/* &&\
+ R --slave --vanilla -e 'install.packages(c("tidyverse", "BiocManager", "data.table", "devtools", "remotes", "R.utils", "stringr", "stringi", "doParallel"), dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")' &&\
+ R --slave --vanilla -e 'BiocManager::install("Biostrings", update=TRUE, lib="/usr/lib/R/library")'
+ 
+%environment
+ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+ export LC_ALL=en_US.UTF-8
