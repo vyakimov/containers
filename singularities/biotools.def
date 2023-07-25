@@ -8,6 +8,7 @@ From: ubuntu:22.04
  cmake \
  locales \
  build-essential \
+ rename \
  libncurses5-dev \
  libncursesw5-dev \
  zlib1g-dev \
@@ -45,8 +46,8 @@ From: ubuntu:22.04
  wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20230116.zip &&\
  unzip plink_linux_x86_64_20230116.zip &&\
  mv plink /usr/local/bin/ && cd /opt &&\
- wget https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_20230516.zip &&\
- unzip plink2_linux_x86_64_20230516.zip && mv plink2 /usr/local/bin/ && cd /opt &&\
+ wget https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_20230707.zip &&\
+ unzip plink2_linux_x86_64_20230707.zip && mv plink2 /usr/local/bin/ && cd /opt &&\
  git clone https://github.com/pezmaster31/bamtools.git &&\
  cd bamtools && mkdir build && cd build &&\
  cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ .. &&\
