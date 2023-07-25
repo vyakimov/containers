@@ -14,7 +14,7 @@ From: ubuntu:22.04
   unzip \
   wget &&\
   cd /opt && git clone https://github.com/ewels/MultiQC.git &&\
-  cd MultiQC && git checkout 83af6d096765fbd277afce520edd6d41b20ff49a &&\
+  cd MultiQC && git checkout 4702c8086ce95521d1e2c46d1a85ebfb41812d8e &&\
   python setup.py install &&\
   cd .. && wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.12.1.zip &&\
   unzip fastqc_v0.12.1.zip && rm fastqc_v0.12.1.zip &&\
