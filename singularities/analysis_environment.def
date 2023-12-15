@@ -10,10 +10,11 @@ from: viya/biodocker
   cd peer && mkdir build && cd build &&\
   cmake ./.. && make && make install &&\
   cd $HOME && rm -rf /opt/* &&\
-  R --slave -e 'install.packages(c("plyr", "knitr", "kableExtra", "gridExtra", "lmtest", "ggbeeswarm", "wesanderson", "lme4", "statmod", "parallelly"), dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")' 
+  R --slave -e 'install.packages(c("plyr", "knitr", "kableExtra", "gridExtra", "lmtest", "lme4", "statmod", "parallelly"), dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")' 
   R --slave  -e 'BiocManager::install(c("ensembldb", "variancePartition", "sva", "WGCNA", "goseq", "DESeq2", "biomaRt", "tximportData", "GenomicFeatures", "EnsDb.Hsapiens.v75", "tximport", "sva", "FDb.UCSC.tRNAs", "preprocessCore", "qvalue", "edgeR", "Rsubread"), update=TRUE, lib="/usr/lib/R/library")' 
   R --slave -e 'remotes::install_github("vqv/ggbiplot", lib="/usr/lib/R/library")' 
   R --slave -e 'devtools::install_github("eclarke/ggbeeswarm", lib="/usr/lib/R/library")'
+  R --slave -e 'install.packages("wesanderson", dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")' 
 %environment
   export LCALL=en_US.UTF-8
   export LANG=en_US.UTF-8
