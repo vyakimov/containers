@@ -16,6 +16,7 @@ from: viya/biodocker
   R --slave -e 'devtools::install_github("eclarke/ggbeeswarm", lib="/usr/lib/R/library")'
   R --slave -e 'install.packages("wesanderson", dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")' 
   R --slave -e  'install.packages("parallelly", dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")'
+  R --slave -e  'install.packages("future.apply", dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")'
 %environment
   export LCALL=en_US.UTF-8
   export LANG=en_US.UTF-8
