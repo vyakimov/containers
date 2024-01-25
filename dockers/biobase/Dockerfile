@@ -1,22 +1,22 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y \
-  software-properties-common
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+RUN apt-get update && apt-get install -y tzdata
 
-RUN add-apt-repository -y universe &&\
-  add-apt-repository -y ppa:deadsnakes/ppa &&\
-  apt update
-
-RUN apt-get update && apt-get install -y \
-  build-essential \
+RUN apt-get update &&\
+  apt-get install -y build-essential \
   cmake \
+  libmariadb-dev \
   curl \
+  g++ \
+  gcc \
   gfortran \
   git \
   gnupg \
   libblas-dev \
-  libopenblas-base \
-  libopenblas-dev \
+  libbz2-dev \
+  libcairo2-dev \ 
   libcurl4-openssl-dev \
   libdevil-dev \
   libffi-dev \
@@ -26,31 +26,48 @@ RUN apt-get update && apt-get install -y \
   libgeos-dev \
   libgit2-dev \
   libharfbuzz-dev \
+  libjpeg-dev \
   libjsoncpp-dev \
-  liblapack3 \
   liblapack-dev \
-  liblapacke-dev \
+  liblapack3 \
+  liblzma-dev \
   liblzo2-dev \
   libncurses5-dev \
   libnss3-dev \
+  libopenblas-base \
+  libopenblas-dev \
+  libpcre2-dev \
+  libpng-dev \
   libreadline-dev \
+  libssh-dev \
   libssl-dev \
+  libtiff5 \
+  libx11-dev \
+  libxml2 \
   libxml2-dev \
+  libxt-dev \ 
+  libzstd-dev \ 
   locales \
+  make \
   neovim \
+  openjdk-11-jdk \
   python3-dev \
   python3-pip \
+  screen \ 
   software-properties-common \
   swig \
+  texinfo \
+  texlive \
+  texlive-fonts-extra \
   tmux \
   wget \
+  xvfb \
   zlib1g-dev \
   zsh
 
 RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
 	&& locale-gen en_US.utf8 \
 	&& /usr/sbin/update-locale LANG=en_US.UTF-8
-
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 
@@ -58,19 +75,25 @@ RUN cd /opt && wget ftp://ftp.gnu.org/gnu/gsl/gsl-2.7.tar.gz &&\
   tar zxvf gsl-2.7.tar.gz && cd gsl-2.7 &&\
   ./configure --prefix /usr/local && make && make install
 
-RUN gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 &&\
-  gpg -a --export E298A3A825C0D65DFD57CBB651716619E084DAB9 | apt-key add - &&\
-  add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&\
-  apt update &&\
-  apt install -y r-base r-base-core r-recommended r-base-dev
+ENV  R_VERSION=4.3.2 
+RUN  cd /usr/local/src &&\
+  wget https://cran.rstudio.com/src/base/R-4/R-${R_VERSION}.tar.gz &&\
+  tar zxvf R-$R_VERSION.tar.gz &&\
+  cd R-$R_VERSION &&\
+  ./configure --prefix=/usr/local --enable-R-shlib --enable-memory-profiling --with-blas --with-lapack &&\
+  make &&\
+  make install &&\
+  cd .. &&\
+  rm -rf R-$R_VERSION* 
+
+RUN /usr/local/bin/R --slave --silent --no-save --no-restore -e 'options(warn=2); install.packages(c("tidyverse", "data.table", "dplyr", "magrittr", "devtools", "remotes", "R.utils"), repos="http://cran.rstudio.com/", lib="/usr/local/lib/R/library")' 
+RUN /usr/local/bin/R --slave --silent --no-save --no-restore -e 'options(warn=2); install.packages("BiocManager", repos="http://cran.rstudio.com/", lib="/usr/local/lib/R/library"); BiocManager::install(version = "3.18"); BiocManager::install("Biostrings", update=TRUE, lib="/usr/local/lib/R/library")'
+RUN /usr/local/bin/R --slave --silent --no-save --no-restore -e 'options(warn=2); install.packages("languageserver", repos="http://cran.rstudio.com/", lib="/usr/local/lib/R/library"); devtools::install_github(c("ManuelHentschel/vscDebugger", "nx10/httpgd"))' 
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 20
-RUN python -m pip install -U numpy
-RUN python -m pip install -U scipy
-RUN python -m pip install -U pandas
-RUN python -m pip install -U matplotlib
-RUN python -m pip install -U bx-python
-
-RUN R --slave --vanilla -e 'install.packages(c("tidyverse", "BiocManager", "data.table", "devtools", "remotes", "R.utils"), dependencies=TRUE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")' 
-RUN R --slave --vanilla -e 'BiocManager::install("Biostrings", update=TRUE, lib="/usr/lib/R/library")' 
-RUN R --slave --vanilla -e 'update.packages(ask=FALSE, repos="http://cran.rstudio.com/", lib="/usr/lib/R/library")'
+RUN pip3 install -U radian
+RUN pip3 install -U numpy
+RUN pip3 install -U scipy
+RUN pip3 install -U pandas
+RUN pip3 install -U matplotlib
+RUN pip3 install -U bx-python
