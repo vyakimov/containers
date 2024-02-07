@@ -71,9 +71,10 @@ RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 
-RUN cd /opt && wget ftp://ftp.gnu.org/gnu/gsl/gsl-2.7.tar.gz &&\
+RUN cd /usr/local/src && wget ftp://ftp.gnu.org/gnu/gsl/gsl-2.7.tar.gz &&\
   tar zxvf gsl-2.7.tar.gz && cd gsl-2.7 &&\
-  ./configure --prefix /usr/local && make && make install
+  ./configure --prefix /usr/local && make && make install &&\
+  cd .. && rm -rf gsl-2.7*
 
 ENV  R_VERSION=4.3.2 
 RUN  cd /usr/local/src &&\
@@ -81,10 +82,8 @@ RUN  cd /usr/local/src &&\
   tar zxvf R-$R_VERSION.tar.gz &&\
   cd R-$R_VERSION &&\
   ./configure --prefix=/usr/local --enable-R-shlib --enable-memory-profiling --with-blas --with-lapack &&\
-  make &&\
-  make install &&\
-  cd .. &&\
-  rm -rf R-$R_VERSION* 
+  make && make install &&\
+  cd .. && rm -rf R-$R_VERSION* 
 
 RUN /usr/local/bin/R --slave --silent --no-save --no-restore -e 'options(warn=2); install.packages(c("tidyverse", "data.table", "dplyr", "magrittr", "devtools", "remotes", "R.utils"), repos="http://cran.rstudio.com/", lib="/usr/local/lib/R/library")' 
 RUN /usr/local/bin/R --slave --silent --no-save --no-restore -e 'options(warn=2); install.packages("BiocManager", repos="http://cran.rstudio.com/", lib="/usr/local/lib/R/library"); BiocManager::install(version = "3.18"); BiocManager::install("Biostrings", update=TRUE, lib="/usr/local/lib/R/library")'
