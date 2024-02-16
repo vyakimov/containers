@@ -86,7 +86,7 @@ RUN  cd /usr/local/src &&\
   cd .. && rm -rf R-$R_VERSION* 
 
 RUN /usr/local/bin/R --slave --silent --no-save --no-restore -e 'options(warn=2); install.packages(c("tidyverse", "data.table", "dplyr", "magrittr", "devtools", "remotes", "R.utils"), repos="http://cran.rstudio.com/", lib="/usr/local/lib/R/library")' 
-RUN /usr/local/bin/R --slave --silent --no-save --no-restore -e 'options(warn=2); install.packages("BiocManager", repos="http://cran.rstudio.com/", lib="/usr/local/lib/R/library"); BiocManager::install(version = "3.18"); BiocManager::install("Biostrings", update=TRUE, lib="/usr/local/lib/R/library")'
+RUN /usr/local/bin/R --slave --silent --no-save --no-restore -e 'options(warn=2); install.packages("BiocManager", repos="http://cran.rstudio.com/", lib="/usr/local/lib/R/library"); BiocManager::install(version = "3.18"); BiocManager::install("preprocessCore", update=TRUE, lib="/usr/local/lib/R/library"); BiocManager::install("Biostrings", update=TRUE, lib="/usr/local/lib/R/library")'
 RUN /usr/local/bin/R --slave --silent --no-save --no-restore -e 'options(warn=2); install.packages("languageserver", repos="http://cran.rstudio.com/", lib="/usr/local/lib/R/library"); devtools::install_github(c("ManuelHentschel/vscDebugger", "nx10/httpgd"))' 
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 20
